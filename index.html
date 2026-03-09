@@ -43,9 +43,69 @@
   .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); display: flex; align-items: center; gap: 8px; }
   .nav-logo span { color: var(--accent); }
   .nav-tag { font-size: 0.65rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 20px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-  .nav-tabs { display: flex; gap: 4px; }
-  .nav-tab { border: none; background: none; font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 500; color: var(--muted); cursor: pointer; padding: 7px 13px; border-radius: 8px; transition: all 0.2s; }
-  .nav-tab.active, .nav-tab:hover { background: var(--ink); color: #fff; }
+  /* ── HAMBURGER ───────────────────── */
+  .ham-btn { background: none; border: none; cursor: pointer; padding: 6px; display: flex; flex-direction: column; gap: 5px; z-index: 201; }
+  .ham-btn span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all 0.3s ease; transform-origin: center; }
+  .ham-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .ham-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .ham-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── SLIDE DRAWER ────────────────── */
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15,17,23,0.4); z-index: 150; backdrop-filter: blur(2px); }
+  .drawer-overlay.show { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: -280px; width: 260px; height: 100vh;
+    background: var(--card); z-index: 160; transition: right 0.32s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column; box-shadow: -8px 0 40px rgba(15,17,23,0.15);
+    border-left: 1px solid var(--border);
+  }
+  .drawer.open { right: 0; }
+  .drawer-head { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+  .drawer-logo { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+  .drawer-logo span { color: var(--accent); }
+  .drawer-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+  .drawer-nav { padding: 12px 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .drawer-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 10px; border: none; background: none;
+    font-family: 'Sora', sans-serif; font-size: 0.88rem; font-weight: 500;
+    color: var(--muted); cursor: pointer; width: 100%; text-align: left;
+    transition: all 0.18s;
+  }
+  .drawer-item:hover { background: var(--paper); color: var(--ink); }
+  .drawer-item.active { background: var(--ink); color: #fff; }
+  .drawer-item .d-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+  .drawer-item .d-label { flex: 1; }
+  .drawer-item .d-badge { font-size: 0.6rem; font-weight: 700; background: var(--accent); color: #fff; padding: 2px 7px; border-radius: 20px; }
+  .drawer-footer { padding: 16px 20px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); }
+
+  /* ── BOTTOM NAV (mobile) ─────────── */
+  .bottom-nav {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(250,248,244,0.96); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border); z-index: 100;
+    padding: 8px 4px env(safe-area-inset-bottom, 8px);
+  }
+  .bottom-nav-inner { display: flex; justify-content: space-around; align-items: center; }
+  .bnav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    border: none; background: none; cursor: pointer; padding: 4px 10px;
+    font-family: 'Sora', sans-serif; min-width: 52px;
+  }
+  .bnav-icon { font-size: 1.25rem; transition: transform 0.2s; }
+  .bnav-label { font-size: 0.58rem; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; transition: color 0.2s; }
+  .bnav-btn.active .bnav-icon { transform: translateY(-2px); }
+  .bnav-btn.active .bnav-label { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .bottom-nav { display: block; }
+    .page-wrap { padding-bottom: 90px !important; }
+    .ham-btn { display: none; }
+  }
+  @media (min-width: 641px) {
+    .ham-btn { display: flex; }
+    .bottom-nav { display: none !important; }
+  }
 
   /* ── SCREENS ─────────────────────── */
   .screen { display: none; animation: fadeUp 0.4s ease both; }
@@ -373,17 +433,43 @@
 </head>
 <body>
 
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- SLIDE DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-logo">Aspirant</div>
+    <div class="drawer-sub">UPSC Preparation Platform</div>
+  </div>
+  <div class="drawer-nav" id="drawerNav" style="display:none">
+    <button class="drawer-item active" onclick="navTo('roadmap',this)"><span class="d-icon">🗺️</span><span class="d-label">Roadmap</span></button>
+    <button class="drawer-item" onclick="navTo('today',this)"><span class="d-icon">📅</span><span class="d-label">Today's Plan</span></button>
+    <button class="drawer-item" onclick="navTo('community',this)"><span class="d-icon">💬</span><span class="d-label">Community</span></button>
+    <button class="drawer-item" onclick="navTo('tests',this)"><span class="d-icon">📝</span><span class="d-label">Practice Tests</span></button>
+    <button class="drawer-item" onclick="navTo('profile',this)"><span class="d-icon">👤</span><span class="d-label">Profile & Settings</span></button>
+  </div>
+  <div class="drawer-footer">Aspirant · UPSC 2026 onwards</div>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo">Aspirant <div class="nav-tag">UPSC</div></div>
-  <div class="nav-tabs" id="navTabs" style="display:none">
-    <button class="nav-tab active" onclick="showScreen('roadmap',this)">Roadmap</button>
-    <button class="nav-tab" onclick="showScreen('today',this)">Today</button>
-    <button class="nav-tab" onclick="showScreen('community',this)">Community</button>
-    <button class="nav-tab" onclick="showScreen('tests',this)">Tests</button>
-    <button class="nav-tab" onclick="showScreen('profile',this)">Profile</button>
-  </div>
+  <button class="ham-btn" id="hamBtn" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- BOTTOM NAV (mobile) -->
+<div class="bottom-nav" id="bottomNav" style="display:none">
+  <div class="bottom-nav-inner">
+    <button class="bnav-btn active" onclick="navTo('roadmap',this)"><span class="bnav-icon">🗺️</span><span class="bnav-label">Roadmap</span></button>
+    <button class="bnav-btn" onclick="navTo('today',this)"><span class="bnav-icon">📅</span><span class="bnav-label">Today</span></button>
+    <button class="bnav-btn" onclick="navTo('community',this)"><span class="bnav-icon">💬</span><span class="bnav-label">Community</span></button>
+    <button class="bnav-btn" onclick="navTo('tests',this)"><span class="bnav-icon">📝</span><span class="bnav-label">Tests</span></button>
+    <button class="bnav-btn" onclick="navTo('profile',this)"><span class="bnav-icon">👤</span><span class="bnav-label">Profile</span></button>
+  </div>
+</div>
 
 <!-- ── SCREEN: ONBOARDING ─────────────────────────────────────── -->
 <div id="screen-onboard" class="screen active">
@@ -595,21 +681,49 @@ function nextStep(n) {
   document.getElementById('step' + (n+1)).classList.remove('step-hidden');
 }
 function buildRoadmap() {
-  document.getElementById('navTabs').style.display = 'flex';
+  document.getElementById('bottomNav').style.display = 'block';
+  document.getElementById('drawerNav').style.display = 'flex';
   renderRoadmap();
   renderToday();
   renderCommunity();
   renderTests();
   renderProfile();
-  showScreen('roadmap', document.querySelector('.nav-tab'));
+  navTo('roadmap');
 }
 
 // ── NAVIGATION ─────────────────────────────────────────────────
-function showScreen(id, btn) {
+function toggleDrawer() {
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('drawerOverlay');
+  const btn = document.getElementById('hamBtn');
+  drawer.classList.toggle('open');
+  overlay.classList.toggle('show');
+  btn.classList.toggle('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('show');
+  document.getElementById('hamBtn').classList.remove('open');
+}
+
+function navTo(id, btn) {
+  closeDrawer();
+  showScreen(id);
+  // sync bottom nav
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.drawer-item').forEach(b => b.classList.remove('active'));
+  // find matching bottom nav btn
+  document.querySelectorAll('.bnav-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
+  });
+  document.querySelectorAll('.drawer-item').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
+  });
+}
+
+function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  if (btn) btn.classList.add('active');
 }
 
 // ── ROADMAP DATA ───────────────────────────────────────────────
