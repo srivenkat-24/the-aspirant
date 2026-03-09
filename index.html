@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aspirant — UPSC</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1117;
+    --paper: #faf8f4;
+    --accent: #c84b2f;
+    --accent2: #2a6f4e;
+    --gold: #c9973a;
+    --muted: #7a7570;
+    --card: #ffffff;
+    --border: #e8e4de;
+    --prelims: #2a6f4e;
+    --mains: #1a4a8a;
+    --interview: #8a2a2a;
+    --radius: 14px;
+    --shadow: 0 2px 20px rgba(15,17,23,0.08);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ─────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,248,244,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+  }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-tag { font-size: 0.65rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 20px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab { border: none; background: none; font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 500; color: var(--muted); cursor: pointer; padding: 7px 13px; border-radius: 8px; transition: all 0.2s; }
+  .nav-tab.active, .nav-tab:hover { background: var(--ink); color: #fff; }
+
+  /* ── SCREENS ─────────────────────── */
+  .screen { display: none; animation: fadeUp 0.4s ease both; }
+  .screen.active { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+
+  /* ── HERO / ONBOARDING ──────────────*/
+  .hero {
+    min-height: calc(100vh - 57px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 20px; text-align: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,75,47,0.07) 0%, transparent 70%);
+  }
+  .hero-eyebrow { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+  .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 7vw, 3.8rem); line-height: 1.1; margin-bottom: 16px; }
+  .hero-title em { color: var(--accent); font-style: italic; }
+  .hero-sub { font-size: 0.95rem; color: var(--muted); max-width: 380px; line-height: 1.7; margin-bottom: 40px; }
+
+  /* Onboarding steps */
+  .onboard-card {
+    width: 100%; max-width: 480px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 24px;
+    box-shadow: var(--shadow); text-align: left;
+  }
+  .step-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .step-q { font-size: 1.05rem; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+  .step-hidden { display: none; }
+
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .option-btn {
+    border: 1.5px solid var(--border); background: var(--paper);
+    border-radius: 10px; padding: 14px 12px; font-family: 'Sora', sans-serif;
+    font-size: 0.82rem; font-weight: 500; cursor: pointer; text-align: center;
+    transition: all 0.18s; line-height: 1.4; color: var(--ink);
+  }
+  .option-btn:hover { border-color: var(--accent); background: rgba(200,75,47,0.05); }
+  .option-btn.selected { border-color: var(--accent); background: rgba(200,75,47,0.08); color: var(--accent); font-weight: 600; }
+  .option-btn .opt-icon { font-size: 1.4rem; display: block; margin-bottom: 6px; }
+
+  .full-btn {
+    width: 100%; padding: 14px; border-radius: 10px; border: none;
+    background: var(--ink); color: #fff; font-family: 'Sora', sans-serif;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 18px;
+    transition: all 0.2s; letter-spacing: 0.02em;
+  }
+  .full-btn:hover { background: var(--accent); }
+  .full-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  /* Stage badges */
+  .stage-check-grid { display: flex; flex-direction: column; gap: 10px; }
+  .stage-check {
+    display: flex; align-items: center; gap: 12px;
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 16px;
+    cursor: pointer; transition: all 0.18s; background: var(--paper);
+  }
+  .stage-check input { display: none; }
+  .stage-check.checked { border-color: var(--accent2); background: rgba(42,111,78,0.06); }
+  .stage-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.18s; }
+  .stage-check.checked .stage-dot { background: var(--accent2); border-color: var(--accent2); }
+  .stage-dot::after { content: '✓'; font-size: 0.65rem; color: #fff; opacity: 0; }
+  .stage-check.checked .stage-dot::after { opacity: 1; }
+  .stage-info strong { font-size: 0.88rem; }
+  .stage-info span { font-size: 0.75rem; color: var(--muted); display: block; }
+
+  /* ── ROADMAP ─────────────────────── */
+  .page-wrap { max-width: 600px; margin: 0 auto; padding: 24px 16px 80px; }
+  .page-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 4px; }
+  .page-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; }
+
+  .timeline { position: relative; }
+  .timeline::before {
+    content: ''; position: absolute; left: 19px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .phase-block { position: relative; margin-bottom: 10px; }
+  .phase-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px 14px 52px; position: relative;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .phase-header:hover { border-color: var(--accent); }
+  .phase-dot {
+    position: absolute; left: 11px; width: 18px; height: 18px;
+    border-radius: 50%; border: 2px solid var(--accent);
+    background: var(--paper); display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; font-weight: 700; color: var(--accent);
+  }
+  .phase-dot.done { background: var(--accent); color: #fff; }
+  .phase-meta { flex: 1; }
+  .phase-meta strong { font-size: 0.9rem; font-weight: 600; display: block; }
+  .phase-meta span { font-size: 0.73rem; color: var(--muted); }
+  .phase-badge {
+    font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .badge-foundation { background: rgba(201,151,58,0.15); color: var(--gold); }
+  .badge-intermediate { background: rgba(42,111,78,0.12); color: var(--accent2); }
+  .badge-mains { background: rgba(26,74,138,0.12); color: var(--mains); }
+  .badge-sprint { background: rgba(200,75,47,0.12); color: var(--accent); }
+  .phase-expand { font-size: 0.75rem; color: var(--muted); margin-left: 4px; transition: transform 0.2s; }
+  .phase-block.open .phase-expand { transform: rotate(180deg); }
+
+  .phase-body { display: none; padding: 4px 0 4px 52px; }
+  .phase-block.open .phase-body { display: block; }
+  .week-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 6px; overflow: hidden;
+  }
+  .week-head {
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .week-head:hover { background: var(--paper); }
+  .week-num { font-size: 0.68rem; font-weight: 700; color: var(--muted); min-width: 44px; }
+  .week-title { font-size: 0.84rem; font-weight: 600; flex: 1; }
+  .week-prog { font-size: 0.72rem; color: var(--muted); }
+  .week-tasks { display: none; padding: 0 14px 12px; border-top: 1px solid var(--border); }
+  .week-item.open .week-tasks { display: block; }
+  .task-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border);
+    flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s; margin-top: 1px;
+  }
+  .task-check.done { background: var(--accent2); border-color: var(--accent2); }
+  .task-check.done::after { content: '✓'; font-size: 0.65rem; color: #fff; }
+  .task-text { font-size: 0.8rem; line-height: 1.5; }
+  .task-text.done { text-decoration: line-through; color: var(--muted); }
+  .task-sub { font-size: 0.7rem; color: var(--muted); display: block; margin-top: 1px; }
+
+  /* Progress ring */
+  .progress-banner {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+  }
+  .ring-wrap { position: relative; width: 60px; height: 60px; flex-shrink: 0; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+  .banner-info strong { font-size: 0.95rem; font-weight: 700; display: block; margin-bottom: 2px; }
+  .banner-info span { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── TODAY ───────────────────────── */
+  .today-date { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .today-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; margin-bottom: 10px; transition: all 0.2s;
+  }
+  .today-card.completed { opacity: 0.6; }
+  .today-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .today-subject {
+    width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .subj-history { background: rgba(201,151,58,0.15); }
+  .subj-polity { background: rgba(26,74,138,0.12); }
+  .subj-geo { background: rgba(42,111,78,0.12); }
+  .subj-eco { background: rgba(200,75,47,0.1); }
+  .subj-csat { background: rgba(120,80,160,0.1); }
+  .subj-current { background: rgba(0,150,200,0.1); }
+  .today-meta strong { font-size: 0.88rem; font-weight: 600; }
+  .today-meta span { font-size: 0.73rem; color: var(--muted); display: block; }
+  .today-tasks-list { display: flex; flex-direction: column; gap: 6px; }
+  .today-task {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    background: var(--paper); border-radius: 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .today-task:hover { background: var(--border); }
+  .today-task-check {
+    width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .today-task-check.done { background: var(--accent2); border-color: var(--accent2); }
+  .today-task-check.done::after { content: '✓'; font-size: 0.7rem; color: #fff; }
+  .today-task-label { font-size: 0.81rem; font-weight: 500; flex: 1; }
+  .today-task-label.done { text-decoration: line-through; color: var(--muted); }
+  .today-task-time { font-size: 0.7rem; color: var(--muted); }
+  .complete-all-btn {
+    width: 100%; padding: 11px; border: 1.5px dashed var(--accent2); background: rgba(42,111,78,0.05);
+    border-radius: 9px; color: var(--accent2); font-family: 'Sora', sans-serif;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 6px; transition: all 0.2s;
+  }
+  .complete-all-btn:hover { background: rgba(42,111,78,0.12); }
+
+  /* Streak */
+  .streak-row { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+  .streak-day { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+  .streak-dot { width: 32px; height: 32px; border-radius: 8px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: var(--muted); transition: all 0.2s; }
+  .streak-dot.active { background: var(--accent); color: #fff; }
+  .streak-dot.today { background: var(--ink); color: #fff; }
+  .streak-label { font-size: 0.58rem; color: var(--muted); }
+
+  /* ── COMMUNITY ───────────────────── */
+  .section-tabs { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+  .sec-tab { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; white-space: nowrap; color: var(--muted); transition: all 0.18s; }
+  .sec-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .post-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; margin-bottom: 12px; transition: all 0.2s;
+  }
+  .post-card:hover { border-color: #ccc; box-shadow: var(--shadow); }
+  .post-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%; background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    font-family: 'DM Serif Display', serif;
+  }
+  .post-author strong { font-size: 0.88rem; font-weight: 700; }
+  .post-author-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .badge-p { background: rgba(42,111,78,0.15); color: var(--prelims); font-size: 0.6rem; font-weight: 800; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.05em; }
+  .badge-m { background: rgba(26,74,138,0.12); color: var(--mains); font-size: 0.6rem; font-weight: 800; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.05em; }
+  .badge-i { background: rgba(138,42,42,0.1); color: var(--interview); font-size: 0.6rem; font-weight: 800; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.05em; }
+  .post-time { font-size: 0.7rem; color: var(--muted); display: block; margin-top: 1px; }
+  .stage-tag {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px; margin-bottom: 8px;
+  }
+  .tag-p { background: rgba(42,111,78,0.1); color: var(--prelims); }
+  .tag-m { background: rgba(26,74,138,0.1); color: var(--mains); }
+  .post-body { font-size: 0.83rem; line-height: 1.7; color: #2a2a2a; margin-bottom: 14px; }
+  .post-tips { list-style: none; }
+  .post-tips li { font-size: 0.8rem; line-height: 1.6; padding: 5px 0 5px 16px; position: relative; color: #333; }
+  .post-tips li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .post-footer { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .post-action { border: none; background: none; font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--muted); cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+  .post-action:hover { background: var(--paper); color: var(--ink); }
+  .post-action.liked { color: var(--accent); }
+
+  /* Compose */
+  .compose-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; }
+  .compose-locked { display: flex; align-items: center; gap: 10px; }
+  .lock-icon { font-size: 1.2rem; }
+  .lock-text { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .lock-text strong { color: var(--ink); }
+  .compose-open textarea {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; font-family: 'Sora', sans-serif; font-size: 0.83rem;
+    resize: none; background: var(--paper); color: var(--ink); outline: none; transition: border-color 0.2s;
+  }
+  .compose-open textarea:focus { border-color: var(--accent); }
+  .compose-submit { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .submit-btn { border: none; background: var(--ink); color: #fff; font-family: 'Sora', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 9px 20px; border-radius: 9px; cursor: pointer; transition: all 0.2s; }
+  .submit-btn:hover { background: var(--accent); }
+
+  /* ── TESTS ───────────────────────── */
+  .test-grid { display: grid; gap: 10px; }
+  .test-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.2s;
+  }
+  .test-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .test-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .test-meta { flex: 1; }
+  .test-meta strong { font-size: 0.9rem; font-weight: 600; display: block; margin-bottom: 3px; }
+  .test-meta span { font-size: 0.73rem; color: var(--muted); }
+  .test-pill { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+  .pill-free { background: rgba(42,111,78,0.12); color: var(--accent2); }
+  .pill-new { background: rgba(200,75,47,0.1); color: var(--accent); }
+
+  /* Quiz modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,17,23,0.6); z-index: 200; align-items: flex-end; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card); width: 100%; max-width: 600px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 24px 20px 40px; max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 4px; }
+  .modal-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 20px; }
+  .q-num { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .q-text { font-size: 0.92rem; font-weight: 600; line-height: 1.5; margin-bottom: 16px; }
+  .q-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .q-opt {
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 15px;
+    font-size: 0.83rem; cursor: pointer; transition: all 0.18s; background: var(--paper); font-family: 'Sora', sans-serif;
+    text-align: left; color: var(--ink);
+  }
+  .q-opt:hover { border-color: var(--ink); }
+  .q-opt.correct { background: rgba(42,111,78,0.1); border-color: var(--accent2); color: var(--accent2); font-weight: 600; }
+  .q-opt.wrong { background: rgba(200,75,47,0.08); border-color: var(--accent); color: var(--accent); }
+  .q-explain { background: var(--paper); border-radius: 10px; padding: 12px 14px; font-size: 0.8rem; line-height: 1.6; color: #333; margin-bottom: 16px; border-left: 3px solid var(--accent2); display: none; }
+  .modal-close { border: none; background: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); position: absolute; right: 20px; top: 20px; }
+
+  /* Result */
+  .result-box { background: var(--paper); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .result-score { font-family: 'DM Serif Display', serif; font-size: 3rem; color: var(--ink); }
+  .result-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; }
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .result-stat { background: var(--card); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+  .result-stat strong { font-size: 1.1rem; font-weight: 700; display: block; }
+  .result-stat span { font-size: 0.68rem; color: var(--muted); }
+  .stat-correct strong { color: var(--accent2); }
+  .stat-wrong strong { color: var(--accent); }
+
+  /* Bottom hint */
+  .bottom-hint { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); padding: 10px 20px; text-align: center; font-size: 0.72rem; color: var(--muted); z-index: 50; }
+
+  /* Misc */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .empty-state { text-align: center; padding: 40px 20px; }
+  .empty-state .es-icon { font-size: 2.5rem; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+
+  @media (min-width: 480px) {
+    .option-grid { grid-template-columns: 1fr 1fr; }
+    .test-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 640px) {
+    nav { padding: 14px 32px; }
+    .page-wrap { padding: 28px 24px 80px; }
+    .modal { border-radius: var(--radius); margin-bottom: 40px; }
+    .modal-overlay { align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Aspirant <div class="nav-tag">UPSC</div></div>
+  <div class="nav-tabs" id="navTabs" style="display:none">
+    <button class="nav-tab active" onclick="showScreen('roadmap',this)">Roadmap</button>
+    <button class="nav-tab" onclick="showScreen('today',this)">Today</button>
+    <button class="nav-tab" onclick="showScreen('community',this)">Community</button>
+    <button class="nav-tab" onclick="showScreen('tests',this)">Tests</button>
+    <button class="nav-tab" onclick="showScreen('profile',this)">Profile</button>
+  </div>
+</nav>
+
+<!-- ── SCREEN: ONBOARDING ─────────────────────────────────────── -->
+<div id="screen-onboard" class="screen active">
+  <div class="hero">
+    <div class="hero-eyebrow">Free • Structured • Trusted</div>
+    <h1 class="hero-title">Crack UPSC with a<br><em>real roadmap</em></h1>
+    <p class="hero-sub">Personalised timelines, verified peer strategies, daily progress tracking — all in one place.</p>
+
+    <div class="onboard-card">
+      <!-- Step 1 -->
+      <div id="step1">
+        <div class="step-label">Step 1 of 3</div>
+        <div class="step-q">Where are you in your UPSC journey?</div>
+        <div class="option-grid">
+          <button class="option-btn" onclick="selectOption(this,'level','beginner')"><span class="opt-icon">🌱</span>Complete Beginner</button>
+          <button class="option-btn" onclick="selectOption(this,'level','studying')"><span class="opt-icon">📚</span>Already Studying</button>
+          <button class="option-btn" onclick="selectOption(this,'level','prelims')"><span class="opt-icon">✅</span>Cleared Prelims</button>
+          <button class="option-btn" onclick="selectOption(this,'level','mains')"><span class="opt-icon">🏅</span>Cleared Mains</button>
+        </div>
+        <button class="full-btn" id="step1btn" onclick="nextStep(1)" disabled>Continue →</button>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" class="step-hidden">
+        <div class="step-label">Step 2 of 3</div>
+        <div class="step-q">When do you want to crack UPSC?</div>
+        <div class="option-grid">
+          <button class="option-btn" onclick="selectOption(this,'year','2026')"><span class="opt-icon">⚡</span>UPSC 2026<br><small style="font-size:0.68rem;color:var(--muted)">Focused sprint</small></button>
+          <button class="option-btn" onclick="selectOption(this,'year','2027')"><span class="opt-icon">🎯</span>UPSC 2027<br><small style="font-size:0.68rem;color:var(--muted)">Full foundation</small></button>
+          <button class="option-btn" onclick="selectOption(this,'year','2028')"><span class="opt-icon">🗓️</span>UPSC 2028<br><small style="font-size:0.68rem;color:var(--muted)">Long term build</small></button>
+          <button class="option-btn" onclick="selectOption(this,'year','2029')"><span class="opt-icon">🏗️</span>UPSC 2029+<br><small style="font-size:0.68rem;color:var(--muted)">Deep preparation</small></button>
+        </div>
+        <button class="full-btn" id="step2btn" onclick="nextStep(2)" disabled>Continue →</button>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="step3" class="step-hidden">
+        <div class="step-label">Step 3 of 3</div>
+        <div class="step-q">Which stages of UPSC have you cleared?</div>
+        <div class="stage-check-grid">
+          <label class="stage-check" id="stageNone" onclick="toggleStageNone(this)">
+            <div class="stage-dot"></div>
+            <div class="stage-info"><strong>None yet</strong><span>I am still preparing</span></div>
+          </label>
+          <label class="stage-check" id="stageP" onclick="toggleStage(this,'p')">
+            <div class="stage-dot"></div>
+            <div class="stage-info"><strong>Prelims</strong><span>Cleared the Preliminary exam</span></div>
+            <span style="margin-left:auto;font-size:0.7rem;font-weight:700;color:var(--prelims)">P</span>
+          </label>
+          <label class="stage-check" id="stageM" onclick="toggleStage(this,'m')">
+            <div class="stage-dot"></div>
+            <div class="stage-info"><strong>Mains</strong><span>Cleared the Mains exam</span></div>
+            <span style="margin-left:auto;font-size:0.7rem;font-weight:700;color:var(--mains)">M</span>
+          </label>
+          <label class="stage-check" id="stageI" onclick="toggleStage(this,'i')">
+            <div class="stage-dot"></div>
+            <div class="stage-info"><strong>Interview</strong><span>Reached the Personality Test stage</span></div>
+            <span style="margin-left:auto;font-size:0.7rem;font-weight:700;color:var(--interview)">I</span>
+          </label>
+        </div>
+        <button class="full-btn" onclick="buildRoadmap()">Build My Roadmap →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN: ROADMAP ─────────────────────────────────────────── -->
+<div id="screen-roadmap" class="screen">
+  <div class="page-wrap">
+    <h1 class="page-title" id="roadmapTitle">Your Roadmap</h1>
+    <p class="page-sub" id="roadmapSub">UPSC 2027 · 15 months · Full Foundation</p>
+
+    <!-- Progress summary -->
+    <div class="progress-banner">
+      <div class="ring-wrap">
+        <svg width="60" height="60" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="24" fill="none" stroke="#e8e4de" stroke-width="5"/>
+          <circle cx="30" cy="30" r="24" fill="none" stroke="#c84b2f" stroke-width="5" stroke-linecap="round"
+            stroke-dasharray="150.8" stroke-dashoffset="150.8" id="progressCircle"/>
+        </svg>
+        <div class="ring-pct" id="progressPct">0%</div>
+      </div>
+      <div class="banner-info">
+        <strong id="progressTitle">Foundation Phase</strong>
+        <span id="progressDesc">0 of 84 tasks completed</span>
+      </div>
+    </div>
+
+    <div class="timeline" id="roadmapTimeline"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN: TODAY ──────────────────────────────────────────── -->
+<div id="screen-today" class="screen">
+  <div class="page-wrap">
+    <h1 class="page-title">Today's Plan</h1>
+    <div class="today-date" id="todayDate"></div>
+
+    <!-- Streak -->
+    <div class="streak-row" id="streakRow"></div>
+
+    <div id="todayContent"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN: COMMUNITY ─────────────────────────────────────── -->
+<div id="screen-community" class="screen">
+  <div class="page-wrap">
+    <h1 class="page-title">Community</h1>
+    <p class="page-sub">Real strategies from those who've been there</p>
+
+    <!-- Compose -->
+    <div class="compose-box" id="composeBox"></div>
+
+    <!-- Filter tabs -->
+    <div class="section-tabs">
+      <button class="sec-tab active" onclick="filterPosts('all',this)">All</button>
+      <button class="sec-tab" onclick="filterPosts('prelims',this)">Prelims Tips</button>
+      <button class="sec-tab" onclick="filterPosts('mains',this)">Mains Tips</button>
+      <button class="sec-tab" onclick="filterPosts('interview',this)">Interview</button>
+    </div>
+
+    <div id="postsContainer"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN: TESTS ──────────────────────────────────────────── -->
+<div id="screen-tests" class="screen">
+  <div class="page-wrap">
+    <h1 class="page-title">Practice Tests</h1>
+    <p class="page-sub">Topic-wise tests with detailed analysis</p>
+
+    <div class="test-grid" id="testGrid"></div>
+  </div>
+</div>
+
+<!-- ── SCREEN: PROFILE ────────────────────────────────────────── -->
+<div id="screen-profile" class="screen">
+  <div class="page-wrap">
+
+    <!-- Profile card -->
+    <div id="profileCard"></div>
+
+    <!-- Performance Analysis -->
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin:24px 0 12px">Performance Analysis</h2>
+    <div id="perfAnalysis"></div>
+
+    <!-- Test History -->
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin:24px 0 12px">Test History</h2>
+    <div id="testHistory"></div>
+
+    <!-- Settings -->
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin:24px 0 12px">Settings</h2>
+    <div id="settingsPanel"></div>
+
+  </div>
+</div>
+
+<!-- ── QUIZ MODAL ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="quizModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeQuiz()">✕</button>
+    <div class="modal-handle"></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+const state = {
+  level: null, year: null,
+  stages: [],
+  completedTasks: JSON.parse(localStorage.getItem('ep_tasks') || '{}'),
+  likedPosts: JSON.parse(localStorage.getItem('ep_likes') || '{}'),
+  streak: JSON.parse(localStorage.getItem('ep_streak') || '[]'),
+  testScores: JSON.parse(localStorage.getItem('ep_scores') || '{}'),
+};
+
+// ── ONBOARDING ──────────────────────────────────────────────────
+function selectOption(btn, key, val) {
+  btn.closest('.option-grid').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state[key] = val;
+  const stepMap = { level: 'step1btn', year: 'step2btn' };
+  if (stepMap[key]) document.getElementById(stepMap[key]).disabled = false;
+}
+
+function toggleStageNone(el) {
+  const isChecking = !el.classList.contains('checked');
+  // uncheck all others
+  ['stageP','stageM','stageI'].forEach(id => document.getElementById(id).classList.remove('checked'));
+  state.stages = [];
+  el.classList.toggle('checked', isChecking);
+}
+
+function toggleStage(el, code) {
+  // uncheck None if selecting a real stage
+  document.getElementById('stageNone').classList.remove('checked');
+  el.classList.toggle('checked');
+  if (el.classList.contains('checked')) {
+    if (!state.stages.includes(code)) state.stages.push(code);
+  } else {
+    state.stages = state.stages.filter(s => s !== code);
+  }
+}
+
+function nextStep(n) {
+  document.getElementById('step' + n).classList.add('step-hidden');
+  document.getElementById('step' + (n+1)).classList.remove('step-hidden');
+}
+function buildRoadmap() {
+  document.getElementById('navTabs').style.display = 'flex';
+  renderRoadmap();
+  renderToday();
+  renderCommunity();
+  renderTests();
+  renderProfile();
+  showScreen('roadmap', document.querySelector('.nav-tab'));
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────────
+function showScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ── ROADMAP DATA ───────────────────────────────────────────────
+function getRoadmapData() {
+  const yearMap = {
+    '2026': { label: '~9 months · Focused Sprint', phases: focusedPhases() },
+    '2027': { label: '~15 months · Full Foundation', phases: fullPhases() },
+    '2028': { label: '~24 months · Long Term Build', phases: longPhases() },
+    '2029': { label: '~36 months · Deep Preparation', phases: longPhases() },
+  };
+  return yearMap[state.year] || yearMap['2027'];
+}
+
+function fullPhases() {
+  return [
+    { id:'p1', label:'PHASE 1', title:'Foundation', badge:'badge-foundation', badgeText:'Foundation', weeks: [
+      { id:'w1', title:'UPSC Orientation & Setup', tasks:[
+        {id:'t1a', text:'Download full UPSC syllabus & print', sub:'upsc.gov.in → Notifications'},
+        {id:'t1b', text:'Read last 3 years Prelims papers', sub:'Just read, don\'t attempt yet'},
+        {id:'t1c', text:'Set up newspaper subscription', sub:'The Hindu — starts Week 3'},
+        {id:'t1d', text:'Create subject-wise notes folders', sub:'One folder per GS subject'},
+      ]},
+      { id:'w2', title:'Ancient History — Indus Valley & Vedic', tasks:[
+        {id:'t2a', text:'NCERT Class 6 Our Past — full read'},
+        {id:'t2b', text:'NCERT Class 12 Themes Ch.1 (Bricks, Beads, Bones)'},
+        {id:'t2c', text:'Make notes: Indus Valley Civilisation (2 pages max)'},
+        {id:'t2d', text:'20 PYQ MCQs — Ancient History (IAS Baba)'},
+      ]},
+      { id:'w3', title:'Ancient History — Mauryas & Buddhism', tasks:[
+        {id:'t3a', text:'Vedic Age — Rig Vedic vs Later Vedic period'},
+        {id:'t3b', text:'Rise of Mahajanapadas, Buddhism, Jainism'},
+        {id:'t3c', text:'Mauryan Empire — Ashoka, administration'},
+        {id:'t3d', text:'Start The Hindu — Page 1 + Editorial only (30 min)'},
+      ]},
+      { id:'w4', title:'Ancient History — Gupta & Art & Culture', tasks:[
+        {id:'t4a', text:'Gupta Empire — Golden Age, science, decline'},
+        {id:'t4b', text:'South Indian Kingdoms — Cholas, Pallavas'},
+        {id:'t4c', text:'Ancient Indian Art — Buddhist architecture, caves'},
+        {id:'t4d', text:'40 MCQ mock test — full Ancient History'},
+      ]},
+      { id:'w5', title:'Medieval History — Delhi Sultanate', tasks:[
+        {id:'t5a', text:'NCERT Class 7 Our Past II — full read'},
+        {id:'t5b', text:'Delhi Sultanate — all dynasties, key rulers'},
+        {id:'t5c', text:'Vijayanagar and Bahmani kingdoms'},
+        {id:'t5d', text:'40 MCQ mock — Medieval Part 1'},
+      ]},
+      { id:'w6', title:'Medieval History — Mughal Empire', tasks:[
+        {id:'t6a', text:'Babur, Humayun — battles, administration'},
+        {id:'t6b', text:'Akbar — Mansabdari, Din-i-Ilahi, consolidation'},
+        {id:'t6c', text:'Aurangzeb — policies and decline of Mughals'},
+        {id:'t6d', text:'Bhakti and Sufi movements — key saints'},
+      ]},
+      { id:'w7', title:'Modern History — Company Rule', tasks:[
+        {id:'t7a', text:'British arrival — Battle of Plassey, Buxar'},
+        {id:'t7b', text:'Subsidiary Alliance, Doctrine of Lapse'},
+        {id:'t7c', text:'Economic impact — Drain of Wealth theory'},
+        {id:'t7d', text:'40 MCQ mock — Modern History Part 1'},
+      ]},
+      { id:'w8', title:'Modern History — 1857 & Nationalism', tasks:[
+        {id:'t8a', text:'1857 Revolt — causes, centres, significance'},
+        {id:'t8b', text:'Socio-religious reforms — Brahmo Samaj, Arya Samaj'},
+        {id:'t8c', text:'INC formation — Moderates vs Extremists'},
+        {id:'t8d', text:'Write 150-word answer on 1857 revolt'},
+      ]},
+    ]},
+    { id:'p2', label:'PHASE 2', title:'Indian Polity', badge:'badge-foundation', badgeText:'Foundation', weeks:[
+      { id:'w9', title:'Constitution — Preamble & FRs', tasks:[
+        {id:'t9a', text:'Laxmikanth Ch. 1-3 — Historical background'},
+        {id:'t9b', text:'Preamble — keywords, philosophy, amendments'},
+        {id:'t9c', text:'Fundamental Rights — Articles 12-35'},
+        {id:'t9d', text:'30 MCQs — Preamble + FRs'},
+      ]},
+      { id:'w10', title:'Parliament + President + PM', tasks:[
+        {id:'t10a', text:'Parliament — composition, sessions, bills'},
+        {id:'t10b', text:'President — election, powers, role'},
+        {id:'t10c', text:'PM and Council of Ministers — collective responsibility'},
+        {id:'t10d', text:'40 MCQs + write 250-word answer on Parliament'},
+      ]},
+      { id:'w11', title:'Judiciary + Federalism + Local Bodies', tasks:[
+        {id:'t11a', text:'Supreme Court — jurisdiction, independence'},
+        {id:'t11b', text:'Centre-State relations — legislative, financial'},
+        {id:'t11c', text:'73rd and 74th amendments — Panchayati Raj'},
+        {id:'t11d', text:'Full Polity mock test — 60 MCQs'},
+      ]},
+    ]},
+    { id:'p3', label:'PHASE 3', title:'Geography', badge:'badge-intermediate', badgeText:'Intermediate', weeks:[
+      { id:'w12', title:'Physical Geography — Earth & Landforms', tasks:[
+        {id:'t12a', text:'NCERT Class 11 Physical Geography Ch.1-4'},
+        {id:'t12b', text:'Earthquakes, volcanoes — types and belts'},
+        {id:'t12c', text:'Landforms — mountains, plateaus, plains'},
+        {id:'t12d', text:'30 MCQs physical geography'},
+      ]},
+      { id:'w13', title:'Climate + Monsoon + Indian Geography', tasks:[
+        {id:'t13a', text:'Pressure belts, winds, jet streams'},
+        {id:'t13b', text:'Indian Monsoon — El Nino, La Nina, IOD'},
+        {id:'t13c', text:'Indian physical features — Himalayas, plains, ghats'},
+        {id:'t13d', text:'Map practice — rivers, physical features on outline map'},
+      ]},
+    ]},
+    { id:'p4', label:'PHASE 4', title:'Economy + Environment', badge:'badge-mains', badgeText:'Mains Prep', weeks:[
+      { id:'w14', title:'Indian Economy Basics', tasks:[
+        {id:'t14a', text:'NCERT Class 11 Indian Economic Development — full read'},
+        {id:'t14b', text:'GDP, GNP, NNP — differences and calculation'},
+        {id:'t14c', text:'Poverty, unemployment — definitions and schemes'},
+        {id:'t14d', text:'30 MCQs + read Economic Survey summary'},
+      ]},
+      { id:'w15', title:'Money, Banking & Budget', tasks:[
+        {id:'t15a', text:'RBI functions — monetary policy, repo rate, CRR'},
+        {id:'t15b', text:'Union Budget — components, fiscal deficit'},
+        {id:'t15c', text:'Inflation — CPI vs WPI, RBI inflation targeting'},
+        {id:'t15d', text:'International trade — WTO, IMF, World Bank basics'},
+      ]},
+      { id:'w16', title:'Environment & Ecology', tasks:[
+        {id:'t16a', text:'Shankar IAS Environment — Ch.1-4 (Ecosystems)'},
+        {id:'t16b', text:'Biodiversity — hotspots, IUCN categories, India\'s biodiversity'},
+        {id:'t16c', text:'Environmental laws — EPA, Forest Act, Wildlife Act'},
+        {id:'t16d', text:'International conventions — Kyoto, Paris, CBD'},
+      ]},
+    ]},
+    { id:'p5', label:'PHASE 5', title:'Mains & Test Series', badge:'badge-sprint', badgeText:'Final Sprint', weeks:[
+      { id:'w17', title:'GS 2 — Governance & IR', tasks:[
+        {id:'t17a', text:'Social justice — welfare schemes, SC/ST/OBC issues'},
+        {id:'t17b', text:'International Relations — India\'s foreign policy, BRICS, SCO'},
+        {id:'t17c', text:'Write 3 full GS2 mock Mains answers'},
+        {id:'t17d', text:'Ethics basics — consequentialism, deontology'},
+      ]},
+      { id:'w18', title:'Prelims Sprint + Mock Marathon', tasks:[
+        {id:'t18a', text:'Full 100-Q Prelims mock — alternate days'},
+        {id:'t18b', text:'Deep analysis of every wrong answer'},
+        {id:'t18c', text:'Current affairs — revise 12-month compilation'},
+        {id:'t18d', text:'CSAT — 1 full paper per week'},
+      ]},
+    ]},
+  ];
+}
+function sprintPhases() {
+  return [
+    { id:'sp1', label:'MONTH 1', title:'Rapid Revision', badge:'badge-sprint', badgeText:'Sprint', weeks:[
+      { id:'sw1', title:'History Quick Revision', tasks:[{id:'ss1',text:'Spectrum Modern India — speed read (2 days)'},{id:'ss2',text:'NCERT 6,7 History — key facts only'},{id:'ss3',text:'50 PYQs — History'},{id:'ss4',text:'Polity — Laxmikanth key chapters'}]},
+      { id:'sw2', title:'Geography + Environment', tasks:[{id:'ss5',text:'NCERT 11 Physical Geography — highlights'},{id:'ss6',text:'Shankar Environment — quick revision'},{id:'ss7',text:'50 PYQs — Geography + Environment'},{id:'ss8',text:'Current affairs — last 6 months only'}]},
+    ]},
+    { id:'sp2', label:'MONTH 2-3', title:'Mock Marathon', badge:'badge-sprint', badgeText:'Sprint', weeks:[
+      { id:'sw3', title:'Daily Mocks + Analysis', tasks:[{id:'ss9',text:'1 full 100-Q mock every alternate day'},{id:'ss10',text:'Deep analysis of all wrong answers'},{id:'ss11',text:'CSAT — 1 full paper per week'},{id:'ss12',text:'Current affairs — daily newspaper + revision'}]},
+    ]},
+  ];
+}
+function focusedPhases() { return fullPhases().slice(0,4); }
+function longPhases() {
+  const phases = fullPhases();
+  phases.push({ id:'p6', label:'YEAR 2', title:'Deep Mains + Optional', badge:'badge-mains', badgeText:'Advanced', weeks:[
+    { id:'lw1', title:'Optional Subject — Paper 1', tasks:[{id:'lt1',text:'Choose optional subject by Month 2'},{id:'lt2',text:'Complete Paper 1 syllabus — 6 months'},{id:'lt3',text:'Attempt last 5 years optional papers'},{id:'lt4',text:'Write 2 optional answers per week'}]},
+    { id:'lw2', title:'GS 4 Ethics — Deep Prep', tasks:[{id:'lt5',text:'Ethics theory — Normative, Applied'},{id:'lt6',text:'Case studies — 2 per day'},{id:'lt7',text:'Essay writing — 2 per week'},{id:'lt8',text:'Full Mains mock test series'}]},
+  ]});
+  return phases;
+}
+
+// ── RENDER ROADMAP ─────────────────────────────────────────────
+function renderRoadmap() {
+  const data = getRoadmapData();
+  document.getElementById('roadmapSub').textContent = 'UPSC ' + state.year + ' · ' + data.label;
+
+  const container = document.getElementById('roadmapTimeline');
+  container.innerHTML = '';
+
+  data.phases.forEach(phase => {
+    const phaseEl = document.createElement('div');
+    phaseEl.className = 'phase-block';
+    phaseEl.id = 'phase-' + phase.id;
+
+    const totalTasks = phase.weeks.reduce((a,w) => a + w.tasks.length, 0);
+    const doneTasks = phase.weeks.reduce((a,w) => a + w.tasks.filter(t => state.completedTasks[t.id]).length, 0);
+    const isDone = doneTasks === totalTasks && totalTasks > 0;
+
+    phaseEl.innerHTML = `
+      <div class="phase-header" onclick="togglePhase('${phase.id}')">
+        <div class="phase-dot ${isDone ? 'done' : ''}">${isDone ? '✓' : phase.id.replace('p','')}</div>
+        <div class="phase-meta">
+          <strong>${phase.label}: ${phase.title}</strong>
+          <span>${doneTasks}/${totalTasks} tasks completed</span>
+        </div>
+        <span class="phase-badge ${phase.badge}">${phase.badgeText}</span>
+        <span class="phase-expand">▼</span>
+      </div>
+      <div class="phase-body" id="body-${phase.id}">
+        ${phase.weeks.map(w => renderWeek(w)).join('')}
+      </div>`;
+    container.appendChild(phaseEl);
+  });
+
+  updateProgress();
+}
+
+function renderWeek(w) {
+  const done = w.tasks.filter(t => state.completedTasks[t.id]).length;
+  return `
+    <div class="week-item" id="week-${w.id}">
+      <div class="week-head" onclick="toggleWeek('${w.id}')">
+        <span class="week-num">${w.id.toUpperCase().replace('W','WK ')}</span>
+        <span class="week-title">${w.title}</span>
+        <span class="week-prog">${done}/${w.tasks.length}</span>
+      </div>
+      <div class="week-tasks">
+        ${w.tasks.map(t => `
+          <div class="task-item">
+            <div class="task-check ${state.completedTasks[t.id] ? 'done':''}" onclick="toggleTask('${t.id}')"></div>
+            <div>
+              <div class="task-text ${state.completedTasks[t.id] ? 'done':''}">${t.text}</div>
+              ${t.sub ? `<span class="task-sub">${t.sub}</span>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function togglePhase(id) {
+  const el = document.getElementById('phase-' + id);
+  el.classList.toggle('open');
+}
+function toggleWeek(id) {
+  document.getElementById('week-' + id).classList.toggle('open');
+}
+
+function toggleTask(id) {
+  state.completedTasks[id] = !state.completedTasks[id];
+  localStorage.setItem('ep_tasks', JSON.stringify(state.completedTasks));
+  renderRoadmap();
+  renderToday();
+}
+
+function updateProgress() {
+  const data = getRoadmapData();
+  let total = 0, done = 0;
+  data.phases.forEach(p => p.weeks.forEach(w => { total += w.tasks.length; done += w.tasks.filter(t => state.completedTasks[t.id]).length; }));
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  const circumference = 150.8;
+  document.getElementById('progressCircle').style.strokeDashoffset = circumference - (circumference * pct / 100);
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressDesc').textContent = done + ' of ' + total + ' tasks completed';
+}
+
+// ── TODAY ──────────────────────────────────────────────────────
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function renderToday() {
+  const now = new Date();
+  document.getElementById('todayDate').textContent =
+    DAYS[now.getDay()] + ', ' + now.getDate() + ' ' + MONTHS[now.getMonth()] + ' ' + now.getFullYear();
+
+  // Streak row (last 7 days)
+  const streakRow = document.getElementById('streakRow');
+  streakRow.innerHTML = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const key = d.toDateString();
+    const isToday = i === 0;
+    const hasActivity = state.completedTasks['streak_' + key] || isToday;
+    streakRow.innerHTML += `
+      <div class="streak-day">
+        <div class="streak-dot ${isToday ? 'today' : (hasActivity ? 'active' : '')}">${DAYS[d.getDay()]}</div>
+        <div class="streak-label">${d.getDate()}</div>
+      </div>`;
+  }
+
+  // Today's tasks
+  const todayContent = document.getElementById('todayContent');
+  const todayTasks = [
+    { subject: '📜', subClass: 'subj-history', title: 'Ancient History', duration: '2 hrs', tasks: [
+      {id:'today_t1', label:'Vedic Age — Rig Vedic vs Later Vedic period', time:'60 min'},
+      {id:'today_t2', label:'Mahajanapadas — rise of kingdoms, key rulers', time:'40 min'},
+      {id:'today_t3', label:'Make notes (max 1 page)', time:'20 min'},
+    ]},
+    { subject: '📰', subClass: 'subj-current', title: 'Current Affairs', duration: '45 min', tasks: [
+      {id:'today_t4', label:'The Hindu — Page 1 + Editorial', time:'30 min'},
+      {id:'today_t5', label:'Note 5 key events in CA notebook', time:'15 min'},
+    ]},
+    { subject: '🧮', subClass: 'subj-csat', title: 'CSAT Practice', duration: '1 hr', tasks: [
+      {id:'today_t6', label:'Reading comprehension — 2 passages', time:'30 min'},
+      {id:'today_t7', label:'Data interpretation — 1 set (10 Qs)', time:'30 min'},
+    ]},
+    { subject: '🗺️', subClass: 'subj-geo', title: 'Geography Revision', duration: '30 min', tasks: [
+      {id:'today_t8', label:'Physical features map — mark on outline map', time:'30 min'},
+    ]},
+  ];
+
+  todayContent.innerHTML = '';
+  todayTasks.forEach(block => {
+    const allDone = block.tasks.every(t => state.completedTasks[t.id]);
+    todayContent.innerHTML += `
+      <div class="today-card ${allDone ? 'completed' : ''}">
+        <div class="today-card-head">
+          <div class="today-subject ${block.subClass}">${block.subject}</div>
+          <div class="today-meta">
+            <strong>${block.title}</strong>
+            <span>${block.duration}</span>
+          </div>
+        </div>
+        <div class="today-tasks-list">
+          ${block.tasks.map(t => `
+            <div class="today-task" onclick="toggleTodayTask('${t.id}')">
+              <div class="today-task-check ${state.completedTasks[t.id] ? 'done' : ''}"></div>
+              <span class="today-task-label ${state.completedTasks[t.id] ? 'done' : ''}">${t.label}</span>
+              <span class="today-task-time">${t.time}</span>
+            </div>`).join('')}
+        </div>
+        <button class="complete-all-btn" onclick="completeAll(${JSON.stringify(block.tasks.map(t=>t.id))})">Mark all complete</button>
+      </div>`;
+  });
+}
+
+function toggleTodayTask(id) {
+  state.completedTasks[id] = !state.completedTasks[id];
+  localStorage.setItem('ep_tasks', JSON.stringify(state.completedTasks));
+  renderToday();
+}
+
+function completeAll(ids) {
+  ids.forEach(id => state.completedTasks[id] = true);
+  localStorage.setItem('ep_tasks', JSON.stringify(state.completedTasks));
+  renderToday();
+}
+
+// ── COMMUNITY ──────────────────────────────────────────────────
+const POSTS = [
+  { id:'post1', author:'Arjun Mehta', initials:'AM', stages:['p','m'], stageFor:'prelims', time:'2 days ago', title:'How I cleared Prelims in first attempt', body:'The single biggest mistake aspirants make is trying to cover everything. Prelims is about smart selection. Here is what worked for me:', tips:['Do ONLY 2 mock tests per week — analyse deeply, not more tests','Current affairs only from last 6 months — UPSC rarely goes beyond that','CSAT: Give it 45 min daily, not less. Many underestimate it.','Static: Laxmikanth + Spectrum + Shankar Environment. Nothing else.','Revise 5 times minimum — first read means nothing without revision'], category:'prelims' },
+  { id:'post2', author:'Priya Nair', initials:'PN', stages:['p','m','i'], stageFor:'mains', time:'5 days ago', title:'GS4 Ethics: The easiest 250 marks nobody prepares for', body:'GS4 is the most neglected and most scoring paper. Here is the truth about it:', tips:['Don\'t mug up philosophy — understand the principle and apply it contextually','Case studies: Write the most balanced answer, not the most idealistic one','Start with \'As a public servant, balancing...\' for case studies — instant structure','Ethics for Mains overlaps 60% with IAS interview — double benefit','Dedicate 45 min daily for 60 days — you can score 120+ out of 250'], category:'mains' },
+  { id:'post3', author:'Rahul Sharma', initials:'RS', stages:['p'], stageFor:'prelims', time:'1 week ago', title:'The Hindu reading strategy for Prelims', body:'Reading The Hindu for 3 hours daily is a trap. Here is how to read it in 45 minutes and retain more:', tips:['Skip: Sports, entertainment, state-level crime, stock prices','Read: Page 1 headlines (mark 2-3 as important), full Editorial, Science page','Note-making format: Date | Headline | UPSC Relevance | Related Static Topic','Once a week: Go through all your notes from that week — 30-min review','By Month 3, you will notice your vocabulary and comprehension improving dramatically'], category:'prelims' },
+  { id:'post4', author:'Sunita Rao', initials:'SR', stages:['p','m','i'], stageFor:'interview', time:'2 weeks ago', title:'Interview board experience — what they actually look for', body:'I appeared before two different boards. Here is the honest truth about the personality test:', tips:['They are NOT testing your knowledge — they are testing your thinking process','When you don\'t know: Say \'I haven\'t read this specifically, but logically...\' and reason out','Never contradict your DAF — everything you wrote is fair game','Your hobby is a trap if you can\'t talk about it for 10 minutes straight','Be conversational, not formal. Smile. They can see stress.'], category:'interview' },
+];
+
+let currentFilter = 'all';
+function filterPosts(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderPosts();
+}
+
+function renderCommunity() {
+  const hasStage = state.stages.length > 0;
+  const compose = document.getElementById('composeBox');
+  if (hasStage) {
+    const stageLabels = state.stages.map(s => s === 'p' ? 'Prelims' : s === 'm' ? 'Mains' : 'Interview').join(', ');
+    compose.innerHTML = `
+      <div class="compose-open">
+        <textarea rows="3" placeholder="Share a strategy or tip for fellow aspirants…"></textarea>
+        <div class="compose-submit"><button class="submit-btn" onclick="submitPost()">Share Strategy</button></div>
+      </div>`;
+  } else {
+    compose.innerHTML = '';
+  }
+  renderPosts();
+}
+
+function renderPosts() {
+  const container = document.getElementById('postsContainer');
+  const filtered = currentFilter === 'all' ? POSTS : POSTS.filter(p => p.category === currentFilter);
+  container.innerHTML = filtered.map(post => {
+    const stageBadges = post.stages.map(s => `<span class="badge-${s}">${s.toUpperCase()}</span>`).join('');
+    const tagClass = post.stageFor === 'prelims' ? 'tag-p' : post.stageFor === 'mains' ? 'tag-m' : 'tag-p';
+    const tagLabel = post.stageFor.charAt(0).toUpperCase() + post.stageFor.slice(1) + ' Strategy';
+    const isLiked = state.likedPosts[post.id];
+    return `
+    <div class="post-card">
+      <div class="post-head">
+        <div class="avatar" style="background:${avatarColor(post.initials)}">${post.initials}</div>
+        <div class="post-author" style="flex:1">
+          <div class="post-author-row">
+            <strong>${post.author}</strong>
+            ${stageBadges}
+          </div>
+          <span class="post-time">${post.time}</span>
+        </div>
+      </div>
+      <span class="stage-tag ${tagClass}">📌 ${tagLabel}</span>
+      <div class="post-body"><strong>${post.title}</strong><br>${post.body}</div>
+      <ul class="post-tips">${post.tips.map(t=>`<li>${t}</li>`).join('')}</ul>
+      <div class="post-footer">
+        <button class="post-action ${isLiked ? 'liked':''}" onclick="likePost('${post.id}',this)">
+          ${isLiked ? '❤️' : '🤍'} ${isLiked ? 'Liked' : 'Helpful'}
+        </button>
+        <button class="post-action">💬 Discuss</button>
+        <button class="post-action">🔖 Save</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function avatarColor(initials) {
+  const colors = ['#0f4c75','#c84b2f','#2a6f4e','#8a2a2a','#5a3d8a','#2a5a8a'];
+  return colors[(initials.charCodeAt(0) + initials.charCodeAt(1)) % colors.length];
+}
+
+function likePost(id, btn) {
+  state.likedPosts[id] = !state.likedPosts[id];
+  localStorage.setItem('ep_likes', JSON.stringify(state.likedPosts));
+  renderPosts();
+}
+
+function submitPost() {
+  const ta = document.querySelector('.compose-open textarea');
+  if (ta && ta.value.trim()) {
+    alert('✅ Your strategy has been submitted for review!\n\nIt will appear after verification.');
+    ta.value = '';
+  }
+}
+
+// ── TESTS ──────────────────────────────────────────────────────
+const TESTS_DATA = [
+  { icon:'📜', bg:'rgba(201,151,58,0.12)', title:'Ancient History', desc:'25 Questions · 30 min', pill:'pill-free', pillText:'Free', id:'ancient' },
+  { icon:'⚖️', bg:'rgba(26,74,138,0.1)', title:'Indian Polity', desc:'30 Questions · 35 min', pill:'pill-free', pillText:'Free', id:'polity' },
+  { icon:'🗺️', bg:'rgba(42,111,78,0.1)', title:'Indian Geography', desc:'25 Questions · 30 min', pill:'pill-new', pillText:'New', id:'geo' },
+  { icon:'💰', bg:'rgba(200,75,47,0.08)', title:'Indian Economy', desc:'20 Questions · 25 min', pill:'pill-free', pillText:'Free', id:'eco' },
+  { icon:'🌿', bg:'rgba(80,160,80,0.1)', title:'Environment & Ecology', desc:'20 Questions · 25 min', pill:'pill-new', pillText:'New', id:'env' },
+  { icon:'⚗️', bg:'rgba(120,80,160,0.08)', title:'Science & Technology', desc:'20 Questions · 25 min', pill:'pill-free', pillText:'Free', id:'sci' },
+];
+
+function renderTests() {
+  const grid = document.getElementById('testGrid');
+  grid.innerHTML = TESTS_DATA.map(t => `
+    <div class="test-card" onclick="openQuiz('${t.id}','${t.title}')">
+      <div class="test-icon" style="background:${t.bg}">${t.icon}</div>
+      <div class="test-meta">
+        <strong>${t.title}</strong>
+        <span>${t.desc}</span>
+      </div>
+      <span class="test-pill ${t.pill}">${t.pillText}</span>
+    </div>`).join('');
+}
+
+// ── QUIZ ───────────────────────────────────────────────────────
+const QUESTIONS = {
+  ancient:[
+    { q:'The Indus Valley Civilisation was discovered in which year?', opts:['1911','1921','1931','1941'], ans:1, exp:'The Indus Valley Civilisation was first discovered in 1921 by Rai Bahadur Daya Ram Sahni at Harappa.' },
+    { q:'Which of the following is NOT a characteristic of the Indus Valley Civilisation?', opts:['Grid pattern town planning','Use of iron tools','Standardised weights & measures','Advanced drainage system'], ans:1, exp:'Iron tools were NOT used by the Indus Valley people. They used copper and bronze. The Iron Age came much later in India.' },
+    { q:'The Rig Veda is primarily a collection of:', opts:['Hymns in praise of gods','Melodies and chants','Philosophical discussions','Ritual procedures'], ans:0, exp:'The Rig Veda is primarily a collection of hymns (suktas) in praise of various deities like Indra, Agni, and Varuna.' },
+    { q:'Ashoka\'s Dhamma was based on:', opts:['Buddhist teachings only','Principles of non-violence, tolerance and righteous conduct','Hindu Vedic traditions','Jain philosophy exclusively'], ans:1, exp:'Ashoka\'s Dhamma was a personal moral code emphasising non-violence, tolerance, respect for all religions, and righteous conduct — not identical to Buddhism.' },
+    { q:'The Gupta period is known as the \'Golden Age\' primarily because of:', opts:['Military conquests','Economic prosperity and cultural achievements','Religious conversions','Trade with China'], ans:1, exp:'The Gupta period (4th-6th century CE) is called the Golden Age due to remarkable achievements in literature, science, mathematics, and art.' },
+  ],
+  polity:[
+    { q:'The Preamble to the Indian Constitution declares India as:', opts:['A Democratic Republic','A Sovereign Socialist Secular Democratic Republic','A Federal Republic','A Parliamentary Democracy'], ans:1, exp:'The 42nd Amendment (1976) added \'Socialist\' and \'Secular\' to the Preamble. The full description is Sovereign Socialist Secular Democratic Republic.' },
+    { q:'Which article deals with the Right to Constitutional Remedies?', opts:['Article 19','Article 21','Article 32','Article 44'], ans:2, exp:'Article 32 is the Right to Constitutional Remedies — Dr. Ambedkar called it the \'Heart and Soul\' of the Constitution.' },
+    { q:'The concept of Judicial Review in India is borrowed from:', opts:['UK','USA','Canada','Ireland'], ans:1, exp:'Judicial Review — the power of courts to strike down laws inconsistent with the Constitution — is borrowed from the USA.' },
+    { q:'Which schedule of the Constitution deals with anti-defection laws?', opts:['8th Schedule','9th Schedule','10th Schedule','11th Schedule'], ans:2, exp:'The 10th Schedule (added by 52nd Amendment, 1985) contains provisions relating to disqualification on grounds of defection.' },
+    { q:'The DPSP are contained in which Part of the Constitution?', opts:['Part III','Part IV','Part IVA','Part V'], ans:1, exp:'Directive Principles of State Policy (DPSP) are in Part IV of the Constitution (Articles 36-51). They are non-justiciable but fundamental to governance.' },
+  ],
+  geo:[
+    { q:'The Tropic of Cancer does NOT pass through:', opts:['Rajasthan','Madhya Pradesh','Jharkhand','Andhra Pradesh'], ans:3, exp:'The Tropic of Cancer passes through 8 Indian states: Gujarat, Rajasthan, MP, Chhattisgarh, Jharkhand, West Bengal, Tripura, and Mizoram. NOT through Andhra Pradesh.' },
+    { q:'Which is the longest river entirely within India?', opts:['Ganga','Godavari','Narmada','Krishna'], ans:1, exp:'Godavari at ~1465 km is the longest river entirely within India. The Ganga is longer but originates partly from the Himalayas on the international border region.' },
+    { q:'The Western Ghats are also known as:', opts:['Sahyadri','Aravalli','Vindhya','Satpura'], ans:0, exp:'The Western Ghats are also called Sahyadri. They run parallel to India\'s western coast and are a UNESCO World Heritage Site and a global biodiversity hotspot.' },
+  ],
+  eco:[
+    { q:'Base year for current GDP calculation in India is:', opts:['2004-05','2010-11','2011-12','2017-18'], ans:2, exp:'India uses 2011-12 as the base year for calculating GDP at constant prices (as of the current National Accounts Statistics methodology).' },
+    { q:'MGNREGA guarantees employment for how many days per year?', opts:['100 days','150 days','200 days','365 days'], ans:0, exp:'MGNREGA (Mahatma Gandhi National Rural Employment Guarantee Act) guarantees 100 days of wage employment per year to rural households.' },
+    { q:'Which body regulates insurance companies in India?', opts:['RBI','SEBI','IRDAI','PFRDA'], ans:2, exp:'IRDAI (Insurance Regulatory and Development Authority of India) regulates and supervises the insurance sector in India.' },
+  ],
+  env:[
+    { q:'Which of the following is a UNESCO World Heritage Site and biodiversity hotspot?', opts:['Kaziranga National Park','Western Ghats','Sundarbans','All of the above'], ans:3, exp:'All three — Kaziranga, the Western Ghats, and the Sundarbans — are UNESCO World Heritage Sites. The Western Ghats is also one of the world\'s 8 \'hottest\' biodiversity hotspots.' },
+    { q:'The Kyoto Protocol deals with:', opts:['Ozone layer depletion','Greenhouse gas emissions','Biodiversity loss','Marine pollution'], ans:1, exp:'The Kyoto Protocol (1997) is an international agreement dealing with reducing greenhouse gas emissions and combating climate change.' },
+    { q:'IUCN\'s \'Critically Endangered\' category means:', opts:['Extinct in the wild','Very high risk of extinction in the wild','High risk of extinction','Vulnerable to extinction'], ans:1, exp:'Critically Endangered (CR) means a species faces a very high risk of extinction in the wild. It is below Extinct in the Wild and above Endangered.' },
+  ],
+  sci:[
+    { q:'ISRO\'s Chandrayaan-3 successfully landed near which region of the Moon?', opts:['North Pole','South Pole','Equatorial region','Dark side'], ans:1, exp:'Chandrayaan-3\'s Vikram lander made a historic soft landing near the lunar South Pole on August 23, 2023, making India the first country to achieve this.' },
+    { q:'5G technology primarily uses which spectrum?', opts:['Low-band only','Mid-band only','High-band (mmWave) only','Combination of low, mid, and high bands'], ans:3, exp:'5G uses a combination of low-band, mid-band, and high-band (mmWave) spectrum. Different bands offer different trade-offs between coverage and speed.' },
+    { q:'CRISPR-Cas9 is a technology used for:', opts:['Vaccine development','Gene editing','Satellite communication','Quantum computing'], ans:1, exp:'CRISPR-Cas9 is a revolutionary gene-editing technology that allows precise modification of DNA sequences in living organisms.' },
+  ],
+};
+
+let currentQuiz = { subject:null, title:null, qIndex:0, answers:[], started:false };
+
+function openQuiz(subject, title) {
+  currentQuiz = { subject, title, qIndex:0, answers:[], started:true };
+  document.getElementById('quizModal').classList.add('show');
+  renderQuestion();
+}
+function closeQuiz() {
+  document.getElementById('quizModal').classList.remove('show');
+  currentQuiz.started = false;
+}
+
+function renderQuestion() {
+  const qs = QUESTIONS[currentQuiz.subject] || [];
+  if (currentQuiz.qIndex >= qs.length) { renderResult(); return; }
+  const q = qs[currentQuiz.qIndex];
+  const content = document.getElementById('quizContent');
+  content.innerHTML = `
+    <div class="modal-title">${currentQuiz.title}</div>
+    <div class="modal-sub">Question ${currentQuiz.qIndex+1} of ${qs.length}</div>
+    <div class="q-num">Q${currentQuiz.qIndex+1} / ${qs.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="q-options">
+      ${q.opts.map((o,i) => `<button class="q-opt" onclick="selectAnswer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+    </div>
+    <div class="q-explain" id="qExplain">💡 ${q.exp}</div>
+    <button class="full-btn" id="nextBtn" style="display:none" onclick="nextQuestion()">
+      ${currentQuiz.qIndex+1 < qs.length ? 'Next Question →' : 'See Results →'}
+    </button>`;
+}
+
+function selectAnswer(chosen) {
+  const qs = QUESTIONS[currentQuiz.subject];
+  const q = qs[currentQuiz.qIndex];
+  const opts = document.querySelectorAll('.q-opt');
+  opts.forEach((o,i) => {
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === chosen && chosen !== q.ans) o.classList.add('wrong');
+    o.disabled = true;
+  });
+  document.getElementById('qExplain').style.display = 'block';
+  document.getElementById('nextBtn').style.display = 'block';
+  currentQuiz.answers.push({ chosen, correct: chosen === q.ans });
+}
+
+function nextQuestion() {
+  currentQuiz.qIndex++;
+  renderQuestion();
+}
+
+function renderResult() {
+  const correct = currentQuiz.answers.filter(a => a.correct).length;
+  const total = currentQuiz.answers.length;
+  const pct = Math.round(correct/total*100);
+
+  // Save score
+  if (!state.testScores) state.testScores = {};
+  state.testScores[currentQuiz.subject] = { pct, correct, total };
+  localStorage.setItem('ep_scores', JSON.stringify(state.testScores));
+  renderProfile();
+  let verdict = pct >= 80 ? '🏆 Excellent!' : pct >= 60 ? '✅ Good job!' : '📚 Keep revising';
+  let color = pct >= 80 ? '#2a6f4e' : pct >= 60 ? '#c9973a' : '#c84b2f';
+  document.getElementById('quizContent').innerHTML = `
+    <div class="result-box">
+      <div class="result-score" style="color:${color}">${pct}%</div>
+      <div class="result-label">${verdict} · ${correct}/${total} correct</div>
+      <div class="result-grid">
+        <div class="result-stat stat-correct"><strong>${correct}</strong><span>Correct</span></div>
+        <div class="result-stat stat-wrong"><strong>${total-correct}</strong><span>Wrong</span></div>
+        <div class="result-stat"><strong>${pct}%</strong><span>Score</span></div>
+      </div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
+        ${pct < 60 ? 'Review this topic before your next attempt. Analyse each wrong answer.' : 'Great performance! Move on to the next topic.'}
+      </p>
+      <button class="full-btn" onclick="openQuiz('${currentQuiz.subject}','${currentQuiz.title}')">Retake Test</button>
+      <button class="full-btn" style="margin-top:8px;background:var(--paper);color:var(--ink);border:1.5px solid var(--border)" onclick="closeQuiz()">Back to Tests</button>
+    </div>`;
+}
+
+// ── PROFILE ────────────────────────────────────────────────────
+function renderProfile() {
+  const data = getRoadmapData();
+  let total = 0, done = 0;
+  const subjectStats = {};
+  data.phases.forEach(p => p.weeks.forEach(w => {
+    // Derive subject from week title
+    const subj = w.title.split('—')[0].trim().split(' ').slice(-2).join(' ');
+    if (!subjectStats[subj]) subjectStats[subj] = { total: 0, done: 0 };
+    w.tasks.forEach(t => {
+      total++; subjectStats[subj].total++;
+      if (state.completedTasks[t.id]) { done++; subjectStats[subj].done++; }
+    });
+  }));
+
+  // Test scores stored in state
+  const scores = state.testScores || {};
+  const testSubjects = Object.keys(QUESTIONS);
+  const allTestsDone = testSubjects.filter(s => scores[s] !== undefined);
+  const avgScore = allTestsDone.length ? Math.round(allTestsDone.reduce((a,s) => a + scores[s].pct, 0) / allTestsDone.length) : null;
+
+  // Stage badges
+  const stageBadgesHtml = state.stages.length
+    ? state.stages.map(s => `<span class="badge-${s}">${s.toUpperCase()}</span>`).join(' ')
+    : '<span style="font-size:0.75rem;color:var(--muted)">Preparing</span>';
+
+  const levelLabel = { beginner:'Complete Beginner', studying:'Already Studying', prelims:'Cleared Prelims', mains:'Cleared Mains' };
+
+  // ── Profile card ──
+  document.getElementById('profileCard').innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;align-items:center;gap:16px;">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff;flex-shrink:0;">A</div>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:700;margin-bottom:4px;">Aspirant</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px;">Targeting UPSC ${state.year} · ${levelLabel[state.level]||''}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${stageBadgesHtml}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent)">${total > 0 ? Math.round(done/total*100) : 0}%</div>
+        <div style="font-size:0.65rem;color:var(--muted)">Overall</div>
+      </div>
+    </div>`;
+
+  // ── Performance Analysis ──
+  const subjects = Object.entries(subjectStats).slice(0, 8);
+  const strengths = subjects.filter(([,v]) => v.total > 0 && v.done/v.total >= 0.6).map(([k]) => k);
+  const weak = subjects.filter(([,v]) => v.total > 0 && v.done/v.total < 0.3).map(([k]) => k);
+  const inProgress = subjects.filter(([,v]) => v.total > 0 && v.done/v.total >= 0.3 && v.done/v.total < 0.6).map(([k]) => k);
+
+  let perfHtml = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div style="background:rgba(42,111,78,0.08);border:1px solid rgba(42,111,78,0.2);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">💪 Strong Areas</div>
+        ${strengths.length ? strengths.map(s=>`<div style="font-size:0.78rem;padding:3px 0;border-bottom:1px solid rgba(42,111,78,0.1);">${s}</div>`).join('') : '<div style="font-size:0.78rem;color:var(--muted)">Complete tasks to see this</div>'}
+      </div>
+      <div style="background:rgba(200,75,47,0.06);border:1px solid rgba(200,75,47,0.15);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">📌 Needs Attention</div>
+        ${weak.length ? weak.map(s=>`<div style="font-size:0.78rem;padding:3px 0;border-bottom:1px solid rgba(200,75,47,0.1);">${s}</div>`).join('') : '<div style="font-size:0.78rem;color:var(--muted)">Looking good so far!</div>'}
+      </div>
+    </div>`;
+
+  // Subject bars
+  perfHtml += `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+    <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;">Syllabus Coverage</div>`;
+  subjects.forEach(([name, v]) => {
+    const pct = v.total > 0 ? Math.round(v.done/v.total*100) : 0;
+    const barColor = pct >= 60 ? 'var(--accent2)' : pct >= 30 ? 'var(--gold)' : 'var(--accent)';
+    perfHtml += `
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:0.78rem;font-weight:500">${name}</span>
+          <span style="font-size:0.72rem;color:var(--muted)">${v.done}/${v.total}</span>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${barColor};border-radius:3px;transition:width 0.6s ease;"></div>
+        </div>
+      </div>`;
+  });
+  perfHtml += '</div>';
+
+  // Test score overview
+  if (allTestsDone.length > 0) {
+    perfHtml += `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:12px;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;">Practice Test Scores</div>
+      ${allTestsDone.map(s => {
+        const sc = scores[s]; const pct = sc.pct;
+        const col = pct >= 80 ? 'var(--accent2)' : pct >= 60 ? 'var(--gold)' : 'var(--accent)';
+        const label = TESTS_DATA.find(t => t.id === s)?.title || s;
+        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:0.8rem;flex:1">${label}</span>
+          <span style="font-size:0.8rem;font-weight:700;color:${col}">${pct}%</span>
+          <div style="width:60px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${col};border-radius:3px;"></div></div>
+        </div>`;
+      }).join('')}
+      <div style="margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;">
+        <span style="font-size:0.78rem;color:var(--muted)">Average Score</span>
+        <span style="font-size:0.88rem;font-weight:700;color:var(--ink)">${avgScore}%</span>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('perfAnalysis').innerHTML = perfHtml;
+
+  // ── Test History ──
+  const histHtml = allTestsDone.length > 0
+    ? allTestsDone.map(s => {
+        const sc = scores[s]; const pct = sc.pct;
+        const label = TESTS_DATA.find(t => t.id === s)?.title || s;
+        const icon = TESTS_DATA.find(t => t.id === s)?.icon || '📝';
+        const verdict = pct >= 80 ? '🏆 Excellent' : pct >= 60 ? '✅ Good' : '📚 Revise';
+        return `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.2rem">${icon}</span>
+          <div style="flex:1"><strong style="font-size:0.85rem">${label}</strong><br><span style="font-size:0.72rem;color:var(--muted)">${sc.correct}/${sc.total} correct · ${verdict}</span></div>
+          <span style="font-size:1rem;font-weight:800;color:${pct>=80?'var(--accent2)':pct>=60?'var(--gold)':'var(--accent)'}">${pct}%</span>
+        </div>`;
+      }).join('')
+    : `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;color:var(--muted);font-size:0.82rem;">No tests attempted yet. Head to the Tests tab to begin.</div>`;
+
+  document.getElementById('testHistory').innerHTML = histHtml;
+
+  // ── Settings ──
+  const settingsItems = [
+    { icon:'🗓️', label:'Target Year', value:'UPSC ' + state.year, action:'Edit' },
+    { icon:'👤', label:'Preparation Level', value: levelLabel[state.level]||'', action:'Edit' },
+    { icon:'🔔', label:'Daily Reminders', value:'Enabled', action:'Toggle' },
+    { icon:'🌙', label:'Theme', value:'Light', action:'Toggle' },
+    { icon:'📊', label:'Export Progress', value:'Download PDF', action:'Export' },
+    { icon:'🔄', label:'Reset All Data', value:'Clear progress and start over', action:'Reset' },
+  ];
+
+  document.getElementById('settingsPanel').innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      ${settingsItems.map((item, i) => `
+        <div onclick="settingAction('${item.action}')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:${i < settingsItems.length-1 ? '1px solid var(--border)' : 'none'};cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='var(--paper)'" onmouseout="this.style.background=''">
+          <span style="font-size:1.1rem;width:26px;text-align:center">${item.icon}</span>
+          <div style="flex:1"><strong style="font-size:0.85rem;display:block">${item.label}</strong><span style="font-size:0.72rem;color:var(--muted)">${item.value}</span></div>
+          <span style="font-size:0.72rem;color:var(--muted);font-weight:600">›</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+function settingAction(action) {
+  if (action === 'Reset') {
+    if (confirm('Reset all progress? This cannot be undone.')) {
+      localStorage.clear();
+      location.reload();
+    }
+  } else if (action === 'Export') {
+    alert('📊 PDF export coming soon! Your progress will be downloadable as a report.');
+  } else if (action === 'Edit') {
+    alert('ℹ️ Profile editing coming soon in the next update.');
+  } else {
+    alert('⚙️ This setting will be available in the full app release.');
+  }
+}
+document.getElementById('todayDate') && (() => {
+  const now = new Date();
+  document.getElementById('todayDate').textContent =
+    DAYS[now.getDay()] + ', ' + now.getDate() + ' ' + MONTHS[now.getMonth()] + ' ' + now.getFullYear();
+})();
+</script>
+</body>
+</html>
